@@ -22,11 +22,10 @@
 # THE SOFTWARE.
 ##
 
-
 import os
 
 import pytest
-from mp.mpfshell import RemoteIOError
+from mp.mpsh import RemoteIOError
 
 
 @pytest.mark.usefixtures("mpsetup")
@@ -34,7 +33,6 @@ class TestMpfexp:
     """
     Tests for the MpFileExplorer class.
     """
-
     def __create_local_file(self, file, data=b""):
 
         with open(file, "wb") as f:
@@ -232,9 +230,7 @@ class TestMpfexp:
         mpfexp.cd("dir4")
         mpfexp.mput(".", r"file\.*")
 
-        assert [("file20", "F"), ("file21", "F"), ("file22", "F")] == sorted(
-            mpfexp.ls(True, True, True)
-        )
+        assert [("file20", "F"), ("file21", "F"), ("file22", "F")] == sorted(mpfexp.ls(True, True, True))
 
         os.mkdir("mget")
         os.chdir(os.path.join(str(tmpdir), "mget"))
@@ -309,9 +305,7 @@ class TestMpfexp:
             assert [("file1", "F"), ("file2", "F")] == mpfexp.ls(True, True, True)
 
             mpfexp.md("subdir1")
-            assert [("subdir1", "D"), ("file1", "F"), ("file2", "F")] == mpfexp.ls(
-                True, True, True
-            )
+            assert [("subdir1", "D"), ("file1", "F"), ("file2", "F")] == mpfexp.ls(True, True, True)
 
             mpfexp.rm("file1")
             mpfexp.rm("file2")

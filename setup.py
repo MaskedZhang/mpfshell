@@ -4,9 +4,9 @@ from setuptools import setup
 from mp import version
 
 setup(
-    name="mpfshell",
+    name=version.PACKAGE_NAME,
     version=version.FULL,
-    description="A simple shell based file explorer for ESP8266 and WiPy "
+    description="A simple shell based file explorer for micropython board"
     "Micropython devices.",
     author="Stefan Wendler",
     author_email="sw@kaltpost.de",
@@ -16,5 +16,5 @@ setup(
     packages=["mp"],
     keywords=["micropython", "shell", "file transfer", "development"],
     classifiers=[],
-    entry_points={"console_scripts": ["mpfshell=mp.mpfshell:main"]},
+    entry_points={"console_scripts": ["mpsh=mp.mpsh:main"]},
 )

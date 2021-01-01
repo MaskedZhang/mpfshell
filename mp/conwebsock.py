@@ -22,7 +22,6 @@
 # THE SOFTWARE.
 ##
 
-
 import logging
 import threading
 import time
@@ -34,36 +33,27 @@ from mp.conbase import ConBase, ConError
 
 class ConWebsock(ConBase, threading.Thread):
     def __init__(self, ip, password):
-
         ConBase.__init__(self)
         threading.Thread.__init__(self)
-
         self.daemon = True
-
         self.fifo = deque()
         self.fifo_lock = threading.Lock()
-
         # websocket.enableTrace(logging.root.getEffectiveLevel() < logging.INFO)
         self.ws = websocket.WebSocketApp(
-            "ws://%s:8266" % ip,
+            "websocket://%s:8266" % ip,
             on_message=self.on_message,
             on_error=self.on_error,
             on_close=self.on_close,
         )
-
         self.start()
-
         self.timeout = 5.0
-
         if b"Password:" in self.read(10, blocking=False):
             self.ws.send(password + "\r")
             if b"WebREPL connected" not in self.read(25, blocking=False):
                 raise ConError()
         else:
             raise ConError()
-
         self.timeout = 1.0
-
         logging.info("websocket connected to ws://%s:8266" % ip)
 
     def run(self):
@@ -74,7 +64,6 @@ class ConWebsock(ConBase, threading.Thread):
 
     def on_message(self, message):
         self.fifo.extend(message)
-
         try:
             self.fifo_lock.release()
         except:
@@ -82,7 +71,6 @@ class ConWebsock(ConBase, threading.Thread):
 
     def on_error(self, error):
         logging.error("websocket error: %s" % error)
-
         try:
             self.fifo_lock.release()
         except:
@@ -90,7 +78,6 @@ class ConWebsock(ConBase, threading.Thread):
 
     def on_close(self, ws):
         logging.info("websocket closed")
-
         try:
             self.fifo_lock.release()
         except:
@@ -99,12 +86,10 @@ class ConWebsock(ConBase, threading.Thread):
     def close(self):
         try:
             self.ws.close()
-
             try:
                 self.fifo_lock.release()
             except:
                 pass
-
             self.join()
         except Exception:
             try:
@@ -113,22 +98,16 @@ class ConWebsock(ConBase, threading.Thread):
                 pass
 
     def read(self, size=1, blocking=True):
-
         data = ""
-
         tstart = time.time()
-
         while (len(data) < size) and (time.time() - tstart < self.timeout):
-
             if len(self.fifo) > 0:
                 data += self.fifo.popleft()
             elif blocking:
                 self.fifo_lock.acquire()
-
         return data.encode("utf-8")
 
     def write(self, data):
-
         self.ws.send(data)
         return len(data)
 

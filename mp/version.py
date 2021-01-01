@@ -22,7 +22,8 @@
 # THE SOFTWARE.
 ##
 
-
-FULL = "0.9.1"
-
+FULL = "0.9.2"
 MAJOR, MINOR, PATCH = FULL.split(".")
+PACKAGE_NAME = "mpsh"
+# AUTHOR_EMAIL = "sw@kaltpost.de"
+AUTHOR_EMAIL = "masked542703@gmail.com"
